@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Körklart – Körkortsteori online</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172b4d}
+header{background:#103d35;color:white;padding:20px;text-align:center}
+header h1{margin:0;font-size:30px}
+nav{background:#176452;padding:12px;text-align:center}
+nav a{color:white;margin:0 9px;text-decoration:none;font-weight:bold}
+main{max-width:800px;margin:auto;padding:18px}
+.hero{background:#dff5e9;padding:30px 20px;text-align:center;border-radius:16px}
+h2{color:#12614d}
+.card{background:white;padding:22px;margin:18px 0;border-radius:14px;box-shadow:0 3px 12px #0001}
+button{background:#147d61;color:white;border:0;border-radius:9px;padding:13px 20px;font-size:16px;cursor:pointer}
+.option{display:block;width:100%;margin:9px 0;text-align:left;background:#e9f1ee;color:#173b32}
+.option:hover{background:#c5e7d7}
+#feedback{font-weight:bold;line-height:1.5}
+.price{font-size:38px;font-weight:bold;color:#147d61}
+footer{text-align:center;padding:25px;background:#103d35;color:white}
+</style>
+</head>
+<body>
+<header>
+<h1>🚗 Körklart</h1>
+<p>Din väg till körkortet</p>
+</header>
+<nav>
+<a href="#teori">Teori</a>
+<a href="#prov">Övningsprov</a>
+<a href="#premium">Premium</a>
+</nav>
+<main>
+<section class="hero">
+<h1>Ta körkort med Körklart!</h1>
+<p>Plugga svensk körkortsteori när och var du vill.</p>
+<a href="#prov"><button>Starta gratis prov</button></a>
+</section>
+
+<section class="card" id="teori">
+<h2>📚 Körkortsteori</h2>
+<p>Träna på trafikregler, vägmärken, trafiksäkerhet, miljö och fordonskunskap.</p>
+<p>Vi bygger en komplett teoribank för B-körkort.</p>
+</section>
+
+<section class="card" id="prov">
+<h2>📝 Gratis övningsprov</h2>
+<p id="progress"></p>
+<h3 id="question"></h3>
+<div id="answers"></div>
+<p id="feedback" aria-live="polite"></p>
+<button id="next" onclick="nextQuestion()" hidden>Nästa fråga</button>
+</section>
+
+<section class="card" id="premium">
+<h2>⭐ Körklart Premium</h2>
+<p class="price">199 kr/år</p>
+<p>365 dagars tillgång – engångsbetalning.</p>
+<ul>
+<li>Alla teorilektioner</li>
+<li>Obegränsade övningsprov</li>
+<li>Vägmärken och trafikregler</li>
+<li>Personlig resultatstatistik</li>
+</ul>
+<button disabled>Kommer snart</button>
+<p>Premium är ännu inte aktiverat. Ingen betalning tas emot.</p>
+</section>
+</main>
+<footer>© 2026 Körklart – Fristående övningstjänst</footer>
+<script>
+const questions=[
+{q:"Vad betyder ett STOP-märke?",a:["Sakta ner","Stanna helt","Lämna företräde endast åt bilar"],correct:1,why:"Vid STOP måste du stanna helt."},
+{q:"Vad gäller vid ett obevakat övergångsställe?",a:["Du har väjningsplikt mot gående som gått ut eller just ska gå ut","Gående måste alltid vänta","Du måste alltid tuta"],correct:0,why:"Förare har väjningsplikt mot gående som gått ut eller just ska gå ut."},
+{q:"Vad är huvudregeln vid högerregeln?",a:["Största bilen kör först","Du lämnar företräde åt fordon från höger","Den snabbaste kör först"],correct:1,why:"Högerregeln innebär normalt väjningsplikt mot fordon som kommer från höger."},
+{q:"Vad bör du göra när sikten är dålig?",a:["Öka hastigheten","Anpassa hastigheten efter sikten","Köra med helljus hela tiden"],correct:1,why:"Hastigheten ska anpassas så att du kan köra säkert."},
+{q:"Vad innebär ett rött trafikljus?",a:["Stanna","Kör om vägen är tom","Öka hastigheten"],correct:0,why:"Rött ljus betyder stopp."}
+];
+let index=0,score=0,answered=false;
+function showQuestion(){
+answered=false;
+document.getElementById("next").hidden=true;
+document.getElementById("feedback").textContent="";
+if(index>=questions.length){
+document.getElementById("progress").textContent="Provet är klart!";
+document.getElementById("question").textContent="Du fick "+score+" av "+questions.length+" rätt!";
+document.getElementById("answers").innerHTML="";
+const b=document.getElementById("next");
+b.textContent="Gör provet igen";
+b.hidden=false;
+return;
+}
+const q=questions[index];
+document.getElementById("progress").textContent="Fråga "+(index+1)+" av "+questions.length;
+document.getElementById("question").textContent=q.q;
+const box=document.getElementById("answers");
+box.innerHTML="";
+q.a.forEach((answer,i)=>{
+const b=document.createElement("button");
+b.className="option";
+b.textContent=answer;
+b.onclick=()=>choose(i);
+box.appendChild(b);
+});
+}
+function choose(i){
+if(answered)return;
+answered=true;
+const q=questions[index];
+const correct=i===q.correct;
+if(correct)score++;
+document.getElementById("feedback").textContent=(correct?"✅ Rätt! ":"❌ Fel. ")+q.why;
+document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+const next=document.getElementById("next");
+next.textContent="Nästa fråga";
+next.hidden=false;
+}
+function nextQuestion(){
+if(index>=questions.length){index=0;score=0;}
+else index++;
+showQuestion();
+}
+showQuestion();
+</script>
+</body>
+</html>
